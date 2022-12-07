@@ -4,13 +4,14 @@
 #include <filterTransientSp.h>
 #include <jsonToDatapoints.h>
 #include <constantsTransient.h>
+#include <utility.h>
 
 using namespace std;
 using namespace DatapointUtility;
 using namespace JsonToDatapoints;
 
 static string nameReading = "data_test";
-static int timestamp = 1669714183;
+static long timestamp = 1669714183568;
 
 static string configure = QUOTE({
     "enable" :{
@@ -65,7 +66,7 @@ static string jsonMessagePivotSpsTyp = QUOTE({
                     "Validity": "good"
                 },
                 "t": {
-                    "FractionOfSecond": 1,
+                    "FractionOfSecond": 9529458,
                     "SecondSinceEpoch": 1669714183
                 },
                 "stVal": 1
@@ -87,7 +88,7 @@ static string jsonMessagePivotDpsTyp = QUOTE({
                     "Validity": "good"
                 },
                 "t": {
-                    "FractionOfSecond": 1,
+                    "FractionOfSecond": 9529458,
                     "SecondSinceEpoch": 1669714183
                 },
                 "stVal": "on"
@@ -105,10 +106,31 @@ static string jsonMessagePivotDpsTypWithoutQ = QUOTE({
         "GTIS": {
             "DpsTyp": {
                 "t": {
-                    "FractionOfSecond": 1,
+                    "FractionOfSecond": 9529458,
                     "SecondSinceEpoch": 1669714183
                 },
                 "stVal": "on"
+            },
+            "Identifier": "M_2367_3_15_5",
+            "TmOrg": {
+                "stVal": "genuine"
+            }
+        }
+    }
+});
+
+static string jsonMessagePivotSpsTypWithoutFractionOfSeconds = QUOTE({
+	"PIVOTTS": {
+        "GTIS": {
+            "SpsTyp": {
+                "q": {
+                    "Source": "process",
+                    "Validity": "good"
+                },
+                "t": {
+                    "SecondSinceEpoch": 1669714183
+                },
+                "stVal": 1
             },
             "Identifier": "M_2367_3_15_5",
             "TmOrg": {
@@ -160,7 +182,7 @@ protected:
         delete filter;
     }
 
-	void startTests(string json, string typeCDC) {
+	void startTests(string json, string typeCDC, long ts=timestamp) {
 		ASSERT_NE(filter, (void *)NULL);
 
         // Create Reading
@@ -184,7 +206,7 @@ protected:
         Datapoints pointsTs = outTs->getReadingData();
         ASSERT_EQ(pointsTs.size(), 1);
 
-        verifyDatapointOrg(&pointsTs, typeCDC, json);
+        verifyDatapointOrg(&pointsTs, typeCDC, json, ts);
 
         Reading *outTsTransient = results[1];
         ASSERT_STREQ(outTsTransient->getAssetName().c_str(), nameReading.c_str());
@@ -193,12 +215,12 @@ protected:
         Datapoints pointsTsTransient = outTsTransient->getReadingData();
         ASSERT_EQ(pointsTsTransient.size(), 1);
 
-        verifyDatapointTransient(&pointsTsTransient, typeCDC);
+        verifyDatapointTransient(&pointsTsTransient, typeCDC, ts);
 
         delete reading;
 	}
 
-	void verifyDatapointOrg(Datapoints *dps, string typeCDC, string json) {
+	void verifyDatapointOrg(Datapoints *dps, string typeCDC, string json, long ts) {
 		Datapoints *dpPivot = findDictElement(dps, ConstantsTransient::KEY_MESSAGE_PIVOT_JSON_ROOT);
 		ASSERT_NE(dpPivot, nullptr);
 		
@@ -220,7 +242,16 @@ protected:
 
         DatapointValue *sinceSecondEpoch = findValueElement(dpT, ConstantsTransient::KEY_MESSAGE_PIVOT_JSON_SECOND_S_E);
 		ASSERT_NE(sinceSecondEpoch, nullptr);
-        ASSERT_EQ(sinceSecondEpoch->toInt(), timestamp);
+
+        long fract = 0;
+        if (json != jsonMessagePivotSpsTypWithoutFractionOfSeconds) {
+            DatapointValue *fractionOfSecond = findValueElement(dpT, ConstantsTransient::KEY_MESSAGE_PIVOT_JSON_FRACT_SEC);
+		    ASSERT_NE(fractionOfSecond, nullptr);
+            fract = fractionOfSecond->toInt();
+        }
+
+        long time_calcul = Utility::toTimestamp(sinceSecondEpoch->toInt(), fract) ;
+        ASSERT_EQ(ts, time_calcul);
 
         DatapointValue *stVal = findValueElement(dpTyp, ConstantsTransient::KEY_MESSAGE_PIVOT_JSON_STVAL);
         ASSERT_NE(stVal, nullptr);
@@ -242,7 +273,7 @@ protected:
         }
 	}
 
-    void verifyDatapointTransient(Datapoints *dps, string typeCDC) {
+    void verifyDatapointTransient(Datapoints *dps, string typeCDC, long ts) {
 		Datapoints *dpPivot = findDictElement(dps, ConstantsTransient::KEY_MESSAGE_PIVOT_JSON_ROOT);
 		ASSERT_NE(dpPivot, nullptr);
 		
@@ -264,7 +295,12 @@ protected:
 
         DatapointValue *sinceSecondEpoch = findValueElement(dpT, ConstantsTransient::KEY_MESSAGE_PIVOT_JSON_SECOND_S_E);
 		ASSERT_NE(sinceSecondEpoch, nullptr);
-        ASSERT_EQ(sinceSecondEpoch->toInt(), timestamp + 1);
+            
+        DatapointValue *fractionOfSecond = findValueElement(dpT, ConstantsTransient::KEY_MESSAGE_PIVOT_JSON_FRACT_SEC);
+		ASSERT_NE(fractionOfSecond, nullptr);
+
+        long time_calcul = Utility::toTimestamp(sinceSecondEpoch->toInt(), fractionOfSecond->toInt()) ;
+        ASSERT_EQ(ts + 1, time_calcul);
 
         DatapointValue *stVal = findValueElement(dpTyp, ConstantsTransient::KEY_MESSAGE_PIVOT_JSON_STVAL);
         ASSERT_NE(stVal, nullptr);
@@ -298,4 +334,9 @@ TEST_F(TestTransientSp, MessagePivotDpsTyp)
 TEST_F(TestTransientSp, MessagePivotDpsTypWithoutQ) 
 {
 	startTests(jsonMessagePivotDpsTypWithoutQ, ConstantsTransient::JSON_CDC_DPS);
+}
+
+TEST_F(TestTransientSp, MessagePivotSpsTypWithoutFractionOfSeconds) 
+{
+	startTests(jsonMessagePivotSpsTypWithoutFractionOfSeconds, ConstantsTransient::JSON_CDC_SPS, 1669714183000);
 }

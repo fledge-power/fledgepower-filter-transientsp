@@ -14,7 +14,7 @@
 #include <filterTransientSp.h>
 #include <constantsTransient.h>
 #include <datapointUtility.h>
-
+#include <utility.h>
 
 using namespace std;
 using namespace DatapointUtility;
@@ -63,11 +63,10 @@ void FilterTransientSp::setJsonConfig(string jsonExchanged) {
 void FilterTransientSp::ingest(READINGSET *readingSet) 
 {
     lock_guard<mutex> guard(m_configMutex);
+    std::vector<Reading*> vectorReadingTransient;
 	
     // Filter enable, process the readings 
-    if (isEnabled()) {
-
-        std::vector<Reading*> vectorReadingTransient;
+    if (isEnabled()) {        
 
         // Just get all the readings in the readingset
         const std::vector<Reading*> & readings = readingSet->getAllReadings();
@@ -135,13 +134,13 @@ void FilterTransientSp::ingest(READINGSET *readingSet)
             Reading *r = generateReadingTransient((*reading));
             if (r != nullptr){
                 Logger::getLogger()->debug("%s Generation of the reading [%s]", beforeLog, r->toJSON());
-                vectorReadingTransient.push_back(r);                
+                vectorReadingTransient.push_back(r);
             }
         }
         
         readingSet->append(vectorReadingTransient);
     }
-    (*m_func)(m_data, readingSet);    
+    (*m_func)(m_data, readingSet);
 }
 
 /**
@@ -157,14 +156,12 @@ Reading *FilterTransientSp::generateReadingTransient(Reading *reading) {
         return nullptr;
     }
 
-    DatapointValue *newValueTransient = new DatapointValue(dpRoot->getData());
+    DatapointValue newValueTransient(dpRoot->getData());
 
     // Generate ouput reading todo
-    Datapoints *dpGtis = findDictElement(newValueTransient->getDpVec(), ConstantsTransient::KEY_MESSAGE_PIVOT_JSON_GT);
+    Datapoints *dpGtis = findDictElement(newValueTransient.getDpVec(), ConstantsTransient::KEY_MESSAGE_PIVOT_JSON_GT);
     if (dpGtis == nullptr) {
         Logger::getLogger()->debug("%s Attribute %s missing, transient creation cancelled", beforeLog, ConstantsTransient::KEY_MESSAGE_PIVOT_JSON_GT);
-        printf("ee");
-        delete newValueTransient;
         return nullptr;
     }
 
@@ -175,7 +172,6 @@ Reading *FilterTransientSp::generateReadingTransient(Reading *reading) {
         
         if (dpTyp == nullptr) {
             Logger::getLogger()->debug("%s Attribute CDC missing, fugitive creation cancelled", beforeLog);
-            delete newValueTransient;
             return nullptr;
         }
         typeSps = false;
@@ -185,7 +181,6 @@ Reading *FilterTransientSp::generateReadingTransient(Reading *reading) {
         DatapointValue *valueTS = findValueElement(dpTyp, ConstantsTransient::KEY_MESSAGE_PIVOT_JSON_STVAL);
         if (valueTS == nullptr) {
             Logger::getLogger()->debug("%s Attribute %s missing, fugitive creation cancelled", beforeLog, ConstantsTransient::KEY_MESSAGE_PIVOT_JSON_STVAL);
-            delete newValueTransient;
             return nullptr;
         }
 
@@ -198,20 +193,28 @@ Reading *FilterTransientSp::generateReadingTransient(Reading *reading) {
     Datapoints *dpT = findDictElement(dpTyp, ConstantsTransient::KEY_MESSAGE_PIVOT_JSON_T);
     if (dpT == nullptr) {
         Logger::getLogger()->debug("%s Attribute %s missing, fugitive creation cancelled", beforeLog, ConstantsTransient::KEY_MESSAGE_PIVOT_JSON_T);
-        delete newValueTransient;
         return nullptr;
     }
     
     DatapointValue *dpSinceEpo = findValueElement(dpT, ConstantsTransient::KEY_MESSAGE_PIVOT_JSON_SECOND_S_E);
      if (dpSinceEpo == nullptr) {
         Logger::getLogger()->debug("%s Attribute %s missing, fugitive creation cancelled", beforeLog, ConstantsTransient::KEY_MESSAGE_PIVOT_JSON_SECOND_S_E);
-        delete newValueTransient;
         return nullptr;
     }
 
-    int timestamp = dpSinceEpo->toInt();
+    DatapointValue *dpFractionSecond = findValueElement(dpT, ConstantsTransient::KEY_MESSAGE_PIVOT_JSON_FRACT_SEC);
+    long msPart = 0;
+    if (dpFractionSecond == nullptr) {
+        Datapoint * dpFr = createIntegerElement(dpT, ConstantsTransient::KEY_MESSAGE_PIVOT_JSON_FRACT_SEC, 0);
+        dpFractionSecond = &dpFr->getData();
+    }
+
+    long timestamp = Utility::toTimestamp(dpSinceEpo->toInt(), dpFractionSecond->toInt());
     timestamp += 1;
-    dpSinceEpo->setValue((long)timestamp);
+    std::pair<long, long> convertTimestamp = Utility::fromTimestamp(timestamp);
+
+    dpSinceEpo->setValue(convertTimestamp.first);
+    dpFractionSecond->setValue(convertTimestamp.second);
 
     Datapoints *dpQ = findDictElement(dpTyp, ConstantsTransient::KEY_MESSAGE_PIVOT_JSON_Q);
     if (dpQ == nullptr) {
@@ -224,15 +227,13 @@ Reading *FilterTransientSp::generateReadingTransient(Reading *reading) {
     Datapoints *dpTmOrg = findDictElement(dpGtis, ConstantsTransient::KEY_MESSAGE_PIVOT_JSON_TM_ORG);
     if (dpTmOrg == nullptr) {
         Logger::getLogger()->debug("%s Attribute %s missing, fugitive creation cancelled", beforeLog, ConstantsTransient::KEY_MESSAGE_PIVOT_JSON_TM_ORG);
-        delete newValueTransient;
         return nullptr;
     }
 
     createStringElement(dpTmOrg, ConstantsTransient::KEY_MESSAGE_PIVOT_JSON_STVAL, ConstantsTransient::VALUE_SUBSTITUTED);
 
-    Datapoint *newDatapointTransient = new Datapoint(dpRoot->getName(), *newValueTransient);
+    Datapoint *newDatapointTransient = new Datapoint(dpRoot->getName(), newValueTransient);
     Reading *newReading = new Reading(reading->getAssetName(), newDatapointTransient);
-
     return newReading;
 }
 

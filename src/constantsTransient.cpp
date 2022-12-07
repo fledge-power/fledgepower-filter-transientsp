@@ -16,6 +16,7 @@ const std::string ConstantsTransient::KEY_MESSAGE_PIVOT_JSON_ID         = "Ident
 const std::string ConstantsTransient::KEY_MESSAGE_PIVOT_JSON_STVAL      = "stVal";
 const std::string ConstantsTransient::KEY_MESSAGE_PIVOT_JSON_T          = "t";
 const std::string ConstantsTransient::KEY_MESSAGE_PIVOT_JSON_SECOND_S_E = "SecondSinceEpoch";
+const std::string ConstantsTransient::KEY_MESSAGE_PIVOT_JSON_FRACT_SEC  = "FractionOfSecond";
 const std::string ConstantsTransient::KEY_MESSAGE_PIVOT_JSON_Q          = "q";
 const std::string ConstantsTransient::KEY_MESSAGE_PIVOT_JSON_SOURCE     = "Source";
 const std::string ConstantsTransient::VALUE_SUBSTITUTED                 = "substituted";

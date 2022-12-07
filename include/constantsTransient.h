@@ -21,6 +21,7 @@ struct ConstantsTransient {
     static const std::string KEY_MESSAGE_PIVOT_JSON_GT;
     static const std::string KEY_MESSAGE_PIVOT_JSON_ID;
     static const std::string KEY_MESSAGE_PIVOT_JSON_STVAL;
+    static const std::string KEY_MESSAGE_PIVOT_JSON_FRACT_SEC;
     static const std::string KEY_MESSAGE_PIVOT_JSON_SECOND_S_E;
     static const std::string KEY_MESSAGE_PIVOT_JSON_T;
     static const std::string KEY_MESSAGE_PIVOT_JSON_Q;
