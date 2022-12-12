@@ -76,64 +76,64 @@ void FilterTransientSp::ingest(READINGSET *readingSet)
             Datapoints &dataPoints = (*reading)->getReadingData();
             string assetName = (*reading)->getAssetName();
 
-            string beforeLog = assetName + " - FilterTransientSp::ingest : ";
+            string beforeLog = ConstantsTransient::NamePlugin + " - " + assetName + " - FilterTransientSp::ingest : ";
 
-            Datapoints *dpPivotTS = findDictElement(&dataPoints, ConstantsTransient::KEY_MESSAGE_PIVOT_JSON_ROOT);
+            Datapoints *dpPivotTS = findDictElement(&dataPoints, ConstantsTransient::KeyMessagePivotJsonRoot);
             if (dpPivotTS == nullptr) {
-                Logger::getLogger()->debug("%s Missing %s attribute, it is ignored", beforeLog, ConstantsTransient::KEY_MESSAGE_PIVOT_JSON_ROOT.c_str());
+                Logger::getLogger()->debug("%s Missing %s attribute, it is ignored", beforeLog.c_str(), ConstantsTransient::KeyMessagePivotJsonRoot.c_str());
                 continue;
             }
 
-            Datapoints *dpGtis = findDictElement(dpPivotTS, ConstantsTransient::KEY_MESSAGE_PIVOT_JSON_GT);
+            Datapoints *dpGtis = findDictElement(dpPivotTS, ConstantsTransient::KeyMessagePivotJsonGt);
             if (dpGtis == nullptr) {
-                Logger::getLogger()->debug("%s Missing %s attribute, it is ignored", beforeLog, ConstantsTransient::KEY_MESSAGE_PIVOT_JSON_GT.c_str());
+                Logger::getLogger()->debug("%s Missing %s attribute, it is ignored", beforeLog.c_str(), ConstantsTransient::KeyMessagePivotJsonGt.c_str());
                 continue;
             }
 
-            string id = findStringElement(dpGtis, ConstantsTransient::KEY_MESSAGE_PIVOT_JSON_ID);
+            string id = findStringElement(dpGtis, ConstantsTransient::KeyMessagePivotJsonId);
             if (id.compare("") == 0) {
-                Logger::getLogger()->debug("%s Missing %s attribute, it is ignored", beforeLog, ConstantsTransient::KEY_MESSAGE_PIVOT_JSON_ID.c_str());
+                Logger::getLogger()->debug("%s Missing %s attribute, it is ignored", beforeLog.c_str(), ConstantsTransient::KeyMessagePivotJsonId.c_str());
                 continue;
             }
 
             if (!m_config->isTransient(id)) {
-                Logger::getLogger()->debug("%s Data %s missing from the configuration", beforeLog, id.c_str());
+                Logger::getLogger()->debug("%s Data %s missing from the configuration", beforeLog.c_str(), id.c_str());
                 continue;
             }
 
             bool typeSps = true;
-            Datapoints *dpTyp = findDictElement(dpGtis, ConstantsTransient::JSON_CDC_SPS);
+            Datapoints *dpTyp = findDictElement(dpGtis, ConstantsTransient::JsonCdcSps);
             if (dpTyp == nullptr) {
-                dpTyp = findDictElement(dpGtis, ConstantsTransient::JSON_CDC_DPS);
+                dpTyp = findDictElement(dpGtis, ConstantsTransient::JsonCdcDps);
                 
                 if (dpTyp == nullptr) {
-                    Logger::getLogger()->debug("%s Missing CDC (%s and %s missing) attribute, it is ignored", beforeLog, ConstantsTransient::JSON_CDC_SPS.c_str(), ConstantsTransient::JSON_CDC_DPS.c_str());
+                    Logger::getLogger()->debug("%s Missing CDC (%s and %s missing) attribute, it is ignored", beforeLog.c_str(), ConstantsTransient::JsonCdcSps.c_str(), ConstantsTransient::JsonCdcDps.c_str());
                     continue;
                 }
                 typeSps = false;
             }            
 
-            DatapointValue *valueTS = findValueElement(dpTyp, ConstantsTransient::KEY_MESSAGE_PIVOT_JSON_STVAL);
+            DatapointValue *valueTS = findValueElement(dpTyp, ConstantsTransient::KeyMessagePivotJsonStVal);
             if (valueTS == nullptr) {
-                Logger::getLogger()->debug("%s Missing %s attribute, it is ignored", beforeLog, ConstantsTransient::KEY_MESSAGE_PIVOT_JSON_STVAL.c_str());
+                Logger::getLogger()->debug("%s Missing %s attribute, it is ignored", beforeLog.c_str(), ConstantsTransient::KeyMessagePivotJsonStVal.c_str());
                 continue;
             }
 
             if (typeSps) {
                 if(valueTS->toInt() != 1) {
-                    Logger::getLogger()->debug("%s The value is not 1, it is ignored", beforeLog);
+                    Logger::getLogger()->debug("%s The value is not 1, it is ignored", beforeLog.c_str());
                     continue;
                 }
             }
             else {
                 if(valueTS->toStringValue() != "on") {
-                    Logger::getLogger()->debug("%s The value is not on, it is ignored", beforeLog);
+                    Logger::getLogger()->debug("%s The value is not on, it is ignored", beforeLog.c_str());
                     continue;
                 }
             }            
             Reading *r = generateReadingTransient((*reading));
             if (r != nullptr){
-                Logger::getLogger()->debug("%s Generation of the reading [%s]", beforeLog, r->toJSON());
+                Logger::getLogger()->debug("%s Generation of the reading [%s]", beforeLog.c_str(), r->toJSON());
                 vectorReadingTransient.push_back(r);
             }
         }
@@ -144,68 +144,71 @@ void FilterTransientSp::ingest(READINGSET *readingSet)
 }
 
 /**
+ * Generate of reading for transient
  * 
+ * @param reading initial reading
+ * @return a modified reading
 */
 Reading *FilterTransientSp::generateReadingTransient(Reading *reading) {
-    string beforeLog = reading->getAssetName() + " - FilterTransientSp::generateReadingTransient : ";
+    string beforeLog = ConstantsTransient::NamePlugin + " - " + reading->getAssetName() + " - FilterTransientSp::generateReadingTransient : ";
     
     // Deep copy on Datapoint
-    Datapoint *dpRoot = reading->getDatapoint(ConstantsTransient::KEY_MESSAGE_PIVOT_JSON_ROOT);
+    Datapoint *dpRoot = reading->getDatapoint(ConstantsTransient::KeyMessagePivotJsonRoot);
     if (dpRoot == nullptr) {
-        Logger::getLogger()->debug("%s Attribute %s missing, transient creation cancelled", beforeLog, ConstantsTransient::KEY_MESSAGE_PIVOT_JSON_ROOT);
+        Logger::getLogger()->debug("%s Attribute %s missing, transient creation cancelled", beforeLog.c_str(), ConstantsTransient::KeyMessagePivotJsonRoot.c_str());
         return nullptr;
     }
 
     DatapointValue newValueTransient(dpRoot->getData());
 
     // Generate ouput reading todo
-    Datapoints *dpGtis = findDictElement(newValueTransient.getDpVec(), ConstantsTransient::KEY_MESSAGE_PIVOT_JSON_GT);
+    Datapoints *dpGtis = findDictElement(newValueTransient.getDpVec(), ConstantsTransient::KeyMessagePivotJsonGt);
     if (dpGtis == nullptr) {
-        Logger::getLogger()->debug("%s Attribute %s missing, transient creation cancelled", beforeLog, ConstantsTransient::KEY_MESSAGE_PIVOT_JSON_GT);
+        Logger::getLogger()->debug("%s Attribute %s missing, transient creation cancelled", beforeLog.c_str(), ConstantsTransient::KeyMessagePivotJsonGt.c_str());
         return nullptr;
     }
 
     bool typeSps = true;
-    Datapoints *dpTyp = findDictElement(dpGtis, ConstantsTransient::JSON_CDC_SPS);
+    Datapoints *dpTyp = findDictElement(dpGtis, ConstantsTransient::JsonCdcSps);
     if (dpTyp == nullptr) {
-        dpTyp = findDictElement(dpGtis, ConstantsTransient::JSON_CDC_DPS);
+        dpTyp = findDictElement(dpGtis, ConstantsTransient::JsonCdcDps);
         
         if (dpTyp == nullptr) {
-            Logger::getLogger()->debug("%s Attribute CDC missing, fugitive creation cancelled", beforeLog);
+            Logger::getLogger()->debug("%s Attribute CDC missing, fugitive creation cancelled", beforeLog.c_str());
             return nullptr;
         }
         typeSps = false;
     }
     
     if (typeSps) {
-        DatapointValue *valueTS = findValueElement(dpTyp, ConstantsTransient::KEY_MESSAGE_PIVOT_JSON_STVAL);
+        DatapointValue *valueTS = findValueElement(dpTyp, ConstantsTransient::KeyMessagePivotJsonStVal);
         if (valueTS == nullptr) {
-            Logger::getLogger()->debug("%s Attribute %s missing, fugitive creation cancelled", beforeLog, ConstantsTransient::KEY_MESSAGE_PIVOT_JSON_STVAL);
+            Logger::getLogger()->debug("%s Attribute %s missing, fugitive creation cancelled", beforeLog.c_str(), ConstantsTransient::KeyMessagePivotJsonStVal.c_str());
             return nullptr;
         }
 
         valueTS->setValue((long)0);
     }
     else {
-        createStringElement(dpTyp, ConstantsTransient::KEY_MESSAGE_PIVOT_JSON_STVAL, "off");
+        createStringElement(dpTyp, ConstantsTransient::KeyMessagePivotJsonStVal, "off");
     }
 
-    Datapoints *dpT = findDictElement(dpTyp, ConstantsTransient::KEY_MESSAGE_PIVOT_JSON_T);
+    Datapoints *dpT = findDictElement(dpTyp, ConstantsTransient::KeyMessagePivotJsonT);
     if (dpT == nullptr) {
-        Logger::getLogger()->debug("%s Attribute %s missing, fugitive creation cancelled", beforeLog, ConstantsTransient::KEY_MESSAGE_PIVOT_JSON_T);
+        Logger::getLogger()->debug("%s Attribute %s missing, fugitive creation cancelled", beforeLog.c_str(), ConstantsTransient::KeyMessagePivotJsonT.c_str());
         return nullptr;
     }
     
-    DatapointValue *dpSinceEpo = findValueElement(dpT, ConstantsTransient::KEY_MESSAGE_PIVOT_JSON_SECOND_S_E);
+    DatapointValue *dpSinceEpo = findValueElement(dpT, ConstantsTransient::KeyMessagePivotJsonSecondSinceEpoch);
      if (dpSinceEpo == nullptr) {
-        Logger::getLogger()->debug("%s Attribute %s missing, fugitive creation cancelled", beforeLog, ConstantsTransient::KEY_MESSAGE_PIVOT_JSON_SECOND_S_E);
+        Logger::getLogger()->debug("%s Attribute %s missing, fugitive creation cancelled", beforeLog.c_str(), ConstantsTransient::KeyMessagePivotJsonSecondSinceEpoch.c_str());
         return nullptr;
     }
 
-    DatapointValue *dpFractionSecond = findValueElement(dpT, ConstantsTransient::KEY_MESSAGE_PIVOT_JSON_FRACT_SEC);
+    DatapointValue *dpFractionSecond = findValueElement(dpT, ConstantsTransient::KeyMessagePivotJsonFractSec);
     long msPart = 0;
     if (dpFractionSecond == nullptr) {
-        Datapoint * dpFr = createIntegerElement(dpT, ConstantsTransient::KEY_MESSAGE_PIVOT_JSON_FRACT_SEC, 0);
+        Datapoint * dpFr = createIntegerElement(dpT, ConstantsTransient::KeyMessagePivotJsonFractSec, 0);
         dpFractionSecond = &dpFr->getData();
     }
 
@@ -216,21 +219,21 @@ Reading *FilterTransientSp::generateReadingTransient(Reading *reading) {
     dpSinceEpo->setValue(convertTimestamp.first);
     dpFractionSecond->setValue(convertTimestamp.second);
 
-    Datapoints *dpQ = findDictElement(dpTyp, ConstantsTransient::KEY_MESSAGE_PIVOT_JSON_Q);
+    Datapoints *dpQ = findDictElement(dpTyp, ConstantsTransient::KeyMessagePivotJsonQ);
     if (dpQ == nullptr) {
-        Datapoint *datapointQ = createDictElement(dpTyp, ConstantsTransient::KEY_MESSAGE_PIVOT_JSON_Q);
+        Datapoint *datapointQ = createDictElement(dpTyp, ConstantsTransient::KeyMessagePivotJsonQ);
         dpQ = datapointQ->getData().getDpVec();
     }
 
-    createStringElement(dpQ, ConstantsTransient::KEY_MESSAGE_PIVOT_JSON_SOURCE, ConstantsTransient::VALUE_SUBSTITUTED);
+    createStringElement(dpQ, ConstantsTransient::KeyMessagePivotJsonSource, ConstantsTransient::ValueSubstituted);
 
-    Datapoints *dpTmOrg = findDictElement(dpGtis, ConstantsTransient::KEY_MESSAGE_PIVOT_JSON_TM_ORG);
+    Datapoints *dpTmOrg = findDictElement(dpGtis, ConstantsTransient::KeyMessagePivotJsonTmOrg);
     if (dpTmOrg == nullptr) {
-        Logger::getLogger()->debug("%s Attribute %s missing, fugitive creation cancelled", beforeLog, ConstantsTransient::KEY_MESSAGE_PIVOT_JSON_TM_ORG);
+        Logger::getLogger()->debug("%s Attribute %s missing, fugitive creation cancelled", beforeLog.c_str(), ConstantsTransient::KeyMessagePivotJsonTmOrg.c_str());
         return nullptr;
     }
 
-    createStringElement(dpTmOrg, ConstantsTransient::KEY_MESSAGE_PIVOT_JSON_STVAL, ConstantsTransient::VALUE_SUBSTITUTED);
+    createStringElement(dpTmOrg, ConstantsTransient::KeyMessagePivotJsonStVal, ConstantsTransient::ValueSubstituted);
 
     Datapoint *newDatapointTransient = new Datapoint(dpRoot->getName(), newValueTransient);
     Reading *newReading = new Reading(reading->getAssetName(), newDatapointTransient);

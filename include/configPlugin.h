@@ -21,12 +21,12 @@ public:
 
     void importExchangedData(const std::string & exchangeConfig);
     void deleteDataTransient();
+    bool isTransient(std::string id);
 
     std::vector<std::string> getDataTransient() { return m_dataTransient; };
-
-    bool isTransient(std::string id);
+    
 private:
-    std::vector<std::string> m_dataTransient = std::vector<std::string>();
+    std::vector<std::string> m_dataTransient;
 };
 
 #endif  // INCLUDE_CONFIG_PLUGIN_H_

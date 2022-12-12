@@ -10,8 +10,7 @@
  */
 #include <version.h>
 #include <filterTransientSp.h>
-
-#define FILTER_NAME "transientsp"
+#include <constantsTransient.h>
 
 static const char *default_config = QUOTE({
 		"plugin" : {
@@ -81,16 +80,15 @@ extern "C" {
  * The plugin information structure
  */
 static PLUGIN_INFORMATION info = {
-        FILTER_NAME,              // Name
-        VERSION,                  // Version
-        0,                        // Flags
-        PLUGIN_TYPE_FILTER,       // Type
-        "1.0.0",                  // Interface version
-		default_config	          // Default plugin configuration
+        FILTER_NAME, 			// Name
+		VERSION,				// Version
+        0,                      // Flags
+        PLUGIN_TYPE_FILTER,     // Type
+        "1.0.0",                // Interface version
+		default_config	        // Default plugin configuration
 };
 
-typedef struct
-{
+typedef struct {
 	FledgeFilter *handle;
 	std::string	configCatName;
 } FILTER_INFO;
@@ -98,8 +96,7 @@ typedef struct
 /**
  * Return the information about this plugin
  */
-PLUGIN_INFORMATION *plugin_info()
-{
+PLUGIN_INFORMATION *plugin_info() {
 	return &info;
 }
 

@@ -51,40 +51,40 @@ void ConfigPlugin::importExchangedData(const string & exchangeConfig) {
     if (!document.IsObject())
         return;
 
-    if (!document.HasMember(ConstantsTransient::JSON_EXCHANGED_DATA) || !document[ConstantsTransient::JSON_EXCHANGED_DATA].IsObject()) {
+    if (!document.HasMember(ConstantsTransient::JsonExchangedData) || !document[ConstantsTransient::JsonExchangedData].IsObject()) {
         return;
     }
-    const Value& exchangeData = document[ConstantsTransient::JSON_EXCHANGED_DATA];
+    const Value& exchangeData = document[ConstantsTransient::JsonExchangedData];
 
-    if (!exchangeData.HasMember(ConstantsTransient::JSON_DATAPOINTS) || !exchangeData[ConstantsTransient::JSON_DATAPOINTS].IsArray()) {
+    if (!exchangeData.HasMember(ConstantsTransient::JsonDatapoints) || !exchangeData[ConstantsTransient::JsonDatapoints].IsArray()) {
         return;
     }
-    const Value& datapoints = exchangeData[ConstantsTransient::JSON_DATAPOINTS];
+    const Value& datapoints = exchangeData[ConstantsTransient::JsonDatapoints];
 
     for (const Value& datapoint : datapoints.GetArray()) {
         
         if (!datapoint.IsObject()) continue;
         
-        if (!datapoint.HasMember(ConstantsTransient::JSON_PIVOT_TYPE) || !datapoint[ConstantsTransient::JSON_PIVOT_TYPE].IsString()) {
+        if (!datapoint.HasMember(ConstantsTransient::JsonPivotType) || !datapoint[ConstantsTransient::JsonPivotType].IsString()) {
             continue;
         }
 
-        string type = datapoint[ConstantsTransient::JSON_PIVOT_TYPE].GetString();
-        if (type != ConstantsTransient::JSON_CDC_SPS && type != ConstantsTransient::JSON_CDC_DPS) {
+        string type = datapoint[ConstantsTransient::JsonPivotType].GetString();
+        if (type != ConstantsTransient::JsonCdcSps && type != ConstantsTransient::JsonCdcDps) {
             continue;
         }
 
-        if (!datapoint.HasMember(ConstantsTransient::JSON_PIVOT_ID) || !datapoint[ConstantsTransient::JSON_PIVOT_ID].IsString()) {
+        if (!datapoint.HasMember(ConstantsTransient::JsonPivotId) || !datapoint[ConstantsTransient::JsonPivotId].IsString()) {
             continue;
         }
-        string pivot_id = datapoint[ConstantsTransient::JSON_PIVOT_ID].GetString();
+        string pivot_id = datapoint[ConstantsTransient::JsonPivotId].GetString();
 
-        if (!datapoint.HasMember(ConstantsTransient::JSON_PIVOT_SUBTYPES) || !datapoint[ConstantsTransient::JSON_PIVOT_SUBTYPES].IsArray()) {
+        if (!datapoint.HasMember(ConstantsTransient::JsonPivotSubtypes) || !datapoint[ConstantsTransient::JsonPivotSubtypes].IsArray()) {
             continue;
         }
 
         bool transient = false;
-        auto subtypes = datapoint[ConstantsTransient::JSON_PIVOT_SUBTYPES].GetArray();
+        auto subtypes = datapoint[ConstantsTransient::JsonPivotSubtypes].GetArray();
 
         for (rapidjson::Value::ConstValueIterator itr = subtypes.Begin(); itr != subtypes.End(); ++itr) {
             string s = (*itr).GetString();

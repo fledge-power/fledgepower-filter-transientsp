@@ -188,7 +188,7 @@ static string jsonMessageDpsDiffOfOn = QUOTE({
 extern "C" {
 	PLUGIN_INFORMATION *plugin_info();
 	void plugin_ingest(void *handle, READINGSET *readingSet);
-	PLUGIN_HANDLE plugin_init(ConfigCategory* config,
+	PLUGIN_HANDLE plugin_init(ConfigCategory *config,
 			  OUTPUT_HANDLE *outHandle,
 			  OUTPUT_STREAM output);
 	
@@ -200,8 +200,8 @@ extern "C" {
 class NoModifyData : public testing::Test
 {
 protected:
-    FilterTransientSp * filter = nullptr;  // Object on which we call for tests
-    ReadingSet * resultReading;
+    FilterTransientSp *filter = nullptr;  // Object on which we call for tests
+    ReadingSet *resultReading;
 
     // Setup is ran for every tests, so each variable are reinitialised
     void SetUp() override
@@ -227,14 +227,14 @@ protected:
 		ASSERT_NE(filter, (void *)NULL);
 
         // Create Reading
-        Datapoints * p = parseJson(json);
+        Datapoints *p = parseJson(json);
 
 		Reading *reading = new Reading(nameReading, *p);
         Readings *readings = new Readings;
         readings->push_back(reading);
 
         // Create ReadingSet
-        ReadingSet * readingSet = new ReadingSet(readings);
+        ReadingSet *readingSet = new ReadingSet(readings);
 		
         plugin_ingest(filter, (READINGSET*)readingSet);
         Readings results = resultReading->getAllReadings();
@@ -259,25 +259,25 @@ protected:
 		Datapoints *dpGi = findDictElement(dpPivot, nameGi);
 		ASSERT_NE(dpGi, nullptr);
 
-        Datapoints *tmOrg = findDictElement(dpGi, ConstantsTransient::KEY_MESSAGE_PIVOT_JSON_TM_ORG);
+        Datapoints *tmOrg = findDictElement(dpGi, ConstantsTransient::KeyMessagePivotJsonTmOrg);
         ASSERT_NE(tmOrg, nullptr);
 
-        DatapointValue *stValTmOrg = findValueElement(tmOrg, ConstantsTransient::KEY_MESSAGE_PIVOT_JSON_STVAL);
+        DatapointValue *stValTmOrg = findValueElement(tmOrg, ConstantsTransient::KeyMessagePivotJsonStVal);
         ASSERT_NE(stValTmOrg, nullptr);
         ASSERT_STREQ(stValTmOrg->toStringValue().c_str(), "genuine"); 
 		
 		Datapoints *dpTyp = findDictElement(dpGi, nameTyp);
 		ASSERT_NE(dpTyp, nullptr);   
 
-        Datapoints *dpT = findDictElement(dpTyp, ConstantsTransient::KEY_MESSAGE_PIVOT_JSON_T);
+        Datapoints *dpT = findDictElement(dpTyp, ConstantsTransient::KeyMessagePivotJsonT);
 		ASSERT_NE(dpT, nullptr);
 
-        DatapointValue *sinceSecondEpoch = findValueElement(dpT, ConstantsTransient::KEY_MESSAGE_PIVOT_JSON_SECOND_S_E);
+        DatapointValue *sinceSecondEpoch = findValueElement(dpT, ConstantsTransient::KeyMessagePivotJsonSecondSinceEpoch);
 		ASSERT_NE(sinceSecondEpoch, nullptr);
         ASSERT_EQ(sinceSecondEpoch->toInt(), 0);
 
         if (json != jsonMessageWithoutStVal) {
-            DatapointValue *stVal = findValueElement(dpTyp, ConstantsTransient::KEY_MESSAGE_PIVOT_JSON_STVAL);
+            DatapointValue *stVal = findValueElement(dpTyp, ConstantsTransient::KeyMessagePivotJsonStVal);
             ASSERT_NE(stVal, nullptr);
 
             if (nameTyp != "DpsTyp") {
@@ -298,10 +298,10 @@ protected:
             }
         }
 
-		Datapoints *dpQ = findDictElement(dpTyp, ConstantsTransient::KEY_MESSAGE_PIVOT_JSON_Q);
+		Datapoints *dpQ = findDictElement(dpTyp, ConstantsTransient::KeyMessagePivotJsonQ);
         ASSERT_NE(dpQ, nullptr);
 
-        DatapointValue *vSource = findValueElement(dpQ, ConstantsTransient::KEY_MESSAGE_PIVOT_JSON_SOURCE);
+        DatapointValue *vSource = findValueElement(dpQ, ConstantsTransient::KeyMessagePivotJsonSource);
         ASSERT_NE(vSource, nullptr);
         ASSERT_STREQ(vSource->toStringValue().c_str(), "process"); 
     }
