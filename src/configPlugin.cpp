@@ -18,13 +18,6 @@ ConfigPlugin::ConfigPlugin() {
 }
 
 /**
- * Destructor
-*/
-ConfigPlugin::~ConfigPlugin() {
-    deleteDataTransient();
-}
-
-/**
  * Deletion of loaded data
 */
 void ConfigPlugin::deleteDataTransient() {
@@ -42,7 +35,7 @@ void ConfigPlugin::importExchangedData(const string & exchangeConfig) {
     deleteDataTransient();
     Document document;
 
-    if (document.Parse(const_cast<char*>(exchangeConfig.c_str())).HasParseError()) {
+    if (document.Parse(exchangeConfig.c_str()).HasParseError()) {
         Logger::getLogger()->fatal("Parsing error in data exchange configuration");
         printf("Parsing error in data exchange configuration\n");
         return;
@@ -107,7 +100,7 @@ void ConfigPlugin::importExchangedData(const string & exchangeConfig) {
 /**
  * 
 */
-bool ConfigPlugin::isTransient(std::string id) {
+bool ConfigPlugin::isTransient(const std::string& id) {
     if (std::find(m_dataTransient.begin(), m_dataTransient.end(), id) != m_dataTransient.end()){
         return true;
     }

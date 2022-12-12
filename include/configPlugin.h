@@ -17,13 +17,12 @@
 class ConfigPlugin {
 public:  
     ConfigPlugin();
-    ~ConfigPlugin();
 
     void importExchangedData(const std::string & exchangeConfig);
     void deleteDataTransient();
-    bool isTransient(std::string id);
+    bool isTransient(const std::string& id);
 
-    std::vector<std::string> getDataTransient() { return m_dataTransient; };
+    const std::vector<std::string> getDataTransient() { return m_dataTransient; };
     
 private:
     std::vector<std::string> m_dataTransient;

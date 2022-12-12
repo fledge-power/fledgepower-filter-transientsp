@@ -31,6 +31,6 @@ long Utility::toTimestamp(long secondSinceEpoch, long fractionOfSecond) {
 */
 std::pair<long, long> Utility::fromTimestamp(long timestamp) {
     long remainder = (timestamp % 1000L);
-    long fractionOfSecond = (remainder) * 16777 + ((remainder * 216) / 1000);
+    long fractionOfSecond = remainder * 16777 + ((remainder * 216) / 1000);
     return std::make_pair(timestamp / 1000L, fractionOfSecond);
 }

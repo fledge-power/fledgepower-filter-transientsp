@@ -240,62 +240,70 @@ protected:
 TEST_F(PluginConfigure, ConfigureErrorParsingJSON) 
 {
 	filter->setJsonConfig(reconfigureErrorParseJSON);
-    ASSERT_EQ(filter->getConfig()->getDataTransient().size(), 0);
+    ASSERT_EQ(filter->getConfigPlugin().getDataTransient().size(), 0);
 }
 
 TEST_F(PluginConfigure, ConfigureErrorExchanged_data) 
 {
 	filter->setJsonConfig(configureErrorExchanged_data);
-    ASSERT_EQ(filter->getConfig()->getDataTransient().size(), 0);
+    ASSERT_EQ(filter->getConfigPlugin().getDataTransient().size(), 0);
 }
 
 TEST_F(PluginConfigure, ConfigureErrorDatapoint) 
 {
 	filter->setJsonConfig(configureErrorDatapoint);
-    ASSERT_EQ(filter->getConfig()->getDataTransient().size(), 0);
+    ASSERT_EQ(filter->getConfigPlugin().getDataTransient().size(), 0);
 }
 
 TEST_F(PluginConfigure, ConfigureErrorType) 
 {
 	filter->setJsonConfig(configureErrorType);
-    ASSERT_EQ(filter->getConfig()->getDataTransient().size(), 0);
+    ASSERT_EQ(filter->getConfigPlugin().getDataTransient().size(), 0);
 }
 
 TEST_F(PluginConfigure, ConfigureErrorTypeMv) 
 {
 	filter->setJsonConfig(configureErrorTypeMv);
-    ASSERT_EQ(filter->getConfig()->getDataTransient().size(), 0);
+    ASSERT_EQ(filter->getConfigPlugin().getDataTransient().size(), 0);
 }
 
 TEST_F(PluginConfigure, ConfigureErrorPivotID) 
 {
 	filter->setJsonConfig(configureErrorPivotID);
-    ASSERT_EQ(filter->getConfig()->getDataTransient().size(), 0);
+    ASSERT_EQ(filter->getConfigPlugin().getDataTransient().size(), 0);
 }
 
 TEST_F(PluginConfigure, ConfigureErrorSubtypes) 
 {
 	filter->setJsonConfig(configureErrorSubtypes);
-    ASSERT_EQ(filter->getConfig()->getDataTransient().size(), 0);
+    ASSERT_EQ(filter->getConfigPlugin().getDataTransient().size(), 0);
 }
 
 TEST_F(PluginConfigure, ConfigureErrorSubtypesWithoutTransient) 
 {
 	filter->setJsonConfig(configureErrorSubtypesWithoutTransient);
-    ASSERT_EQ(filter->getConfig()->getDataTransient().size(), 0);
-    ASSERT_FALSE(filter->getConfig()->isTransient("M_2367_3_15_4"));
+    ASSERT_EQ(filter->getConfigPlugin().getDataTransient().size(), 0);
+    ASSERT_FALSE(filter->getConfigPlugin().isTransient("M_2367_3_15_4"));
 }
 
 TEST_F(PluginConfigure, ConfigureOKSps) 
 {
 	filter->setJsonConfig(configureOKSps);
-    ASSERT_EQ(filter->getConfig()->getDataTransient().size(), 1);
-    ASSERT_TRUE(filter->getConfig()->isTransient("M_2367_3_15_4"));
+    ASSERT_EQ(filter->getConfigPlugin().getDataTransient().size(), 1);
+    ASSERT_TRUE(filter->getConfigPlugin().isTransient("M_2367_3_15_4"));
 }
 
 TEST_F(PluginConfigure, ConfigureOKDps) 
 {
 	filter->setJsonConfig(configureOKDps);
-    ASSERT_EQ(filter->getConfig()->getDataTransient().size(), 1);
-    ASSERT_TRUE(filter->getConfig()->isTransient("M_2367_3_15_4"));
+    ASSERT_EQ(filter->getConfigPlugin().getDataTransient().size(), 1);
+    ASSERT_TRUE(filter->getConfigPlugin().isTransient("M_2367_3_15_4"));
+}
+
+TEST_F(PluginConfigure, DeleteTransient) 
+{
+	filter->setJsonConfig(configureOKDps);
+    ASSERT_EQ(filter->getConfigPlugin().getDataTransient().size(), 1);
+    filter->getConfigPlugin().deleteDataTransient();
+    ASSERT_EQ(filter->getConfigPlugin().getDataTransient().size(), 0);
 }

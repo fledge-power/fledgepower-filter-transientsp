@@ -20,11 +20,11 @@ using namespace DatapointUtility;
  * @param json : string json 
  * @return vector of datapoints
 */
-Datapoints *JsonToDatapoints::parseJson(string json) {
+Datapoints *JsonToDatapoints::parseJson(const string& json) {
 	
 	Document document;
 
-	const auto& parseResult = document.Parse(const_cast<char*>(json.c_str()));
+	const auto& parseResult = document.Parse(json.c_str());
     if (parseResult.HasParseError()) {
         Logger::getLogger()->fatal("Parsing error %d (%s).", parseResult.GetParseError(), json.c_str());
         printf("Parsing error %d (%s).", parseResult.GetParseError(), json.c_str());
@@ -44,7 +44,7 @@ Datapoints *JsonToDatapoints::parseJson(string json) {
  * @return vector of datapoints
 */
 Datapoints *JsonToDatapoints::recursivJson(const Value& document) {
-	Datapoints *p = new Datapoints;
+	auto p = new Datapoints;
 
 	for (Value::ConstMemberIterator itr = document.MemberBegin(); itr != document.MemberEnd(); ++itr)
 	{        

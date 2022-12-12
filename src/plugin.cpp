@@ -116,7 +116,7 @@ PLUGIN_HANDLE plugin_init(ConfigCategory* config,
 			  OUTPUT_HANDLE *outHandle,
 			  OUTPUT_STREAM output)
 {
-	FilterTransientSp *filterTransientSP = new FilterTransientSp(FILTER_NAME,
+	auto filterTransientSP = new FilterTransientSp(FILTER_NAME,
                                         *config,
                                         outHandle,
                                         output);
@@ -137,7 +137,7 @@ PLUGIN_HANDLE plugin_init(ConfigCategory* config,
 void plugin_ingest(PLUGIN_HANDLE *handle,
 		   READINGSET *readingSet)
 {
-	FilterTransientSp *filterTransientSP = (FilterTransientSp *) handle;
+	auto filterTransientSP = (FilterTransientSp *) handle;
 	filterTransientSP->ingest(readingSet);
 }
 
@@ -149,7 +149,7 @@ void plugin_ingest(PLUGIN_HANDLE *handle,
  */
 void plugin_reconfigure(PLUGIN_HANDLE *handle, const string& newConfig)
 {
-	FilterTransientSp *filterTransientSP = (FilterTransientSp *)handle;
+	auto filterTransientSP = (FilterTransientSp *)handle;
 	filterTransientSP->reconfigure(newConfig);
 }
 
@@ -158,7 +158,7 @@ void plugin_reconfigure(PLUGIN_HANDLE *handle, const string& newConfig)
  */
 void plugin_shutdown(PLUGIN_HANDLE *handle)
 {
-	FilterTransientSp *filterTransientSP = (FilterTransientSp *)handle;
+	auto filterTransientSP = (FilterTransientSp *)handle;
 	delete filterTransientSP;
 }
 

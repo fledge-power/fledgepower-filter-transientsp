@@ -27,19 +27,17 @@ public:
                         OUTPUT_HANDLE *outHandle,
                         OUTPUT_STREAM output);
 
-    ~FilterTransientSp();
-
     void ingest(READINGSET *readingSet);
     void reconfigure(const std::string& newConfig);
 
-    void setJsonConfig(std::string jsonExchanged);
+    void setJsonConfig(const std::string& jsonExchanged);
 
-    ConfigPlugin *getConfig() { return m_config;} 
+    ConfigPlugin getConfigPlugin() { return m_configPlugin;} 
     Reading *generateReadingTransient(Reading *dps);
 
 private:
     std::mutex      m_configMutex;
-    ConfigPlugin   *m_config;
+    ConfigPlugin    m_configPlugin;
 };
 
 #endif  // INCLUDE_FILTER_TRANSIENT_SP_H_

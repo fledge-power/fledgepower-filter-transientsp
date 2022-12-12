@@ -36,14 +36,6 @@ FilterTransientSp::FilterTransientSp(const std::string& filterName,
                         OUTPUT_STREAM output) :
                                 FledgeFilter(filterName, filterConfig, outHandle, output)
 {
-    m_config = new ConfigPlugin();
-}
-
-/**
- * Destructor for this filter class
- */
-FilterTransientSp::~FilterTransientSp() {
-    delete m_config;
 }
 
 /**
@@ -51,8 +43,8 @@ FilterTransientSp::~FilterTransientSp() {
  * 
  * @param jsonExchanged : configuration ExchangedData
 */
-void FilterTransientSp::setJsonConfig(string jsonExchanged) {
-    m_config->importExchangedData(jsonExchanged);
+void FilterTransientSp::setJsonConfig(const string& jsonExchanged) {
+    m_configPlugin.importExchangedData(jsonExchanged);
 }
 
 /**
@@ -96,7 +88,7 @@ void FilterTransientSp::ingest(READINGSET *readingSet)
                 continue;
             }
 
-            if (!m_config->isTransient(id)) {
+            if (!m_configPlugin.isTransient(id)) {
                 Logger::getLogger()->debug("%s Data %s missing from the configuration", beforeLog.c_str(), id.c_str());
                 continue;
             }
@@ -133,7 +125,7 @@ void FilterTransientSp::ingest(READINGSET *readingSet)
             }            
             Reading *r = generateReadingTransient((*reading));
             if (r != nullptr){
-                Logger::getLogger()->debug("%s Generation of the reading [%s]", beforeLog.c_str(), r->toJSON());
+                Logger::getLogger()->debug("%s Generation of the reading [%s]", beforeLog.c_str(), r->toJSON().c_str());
                 vectorReadingTransient.push_back(r);
             }
         }
@@ -206,7 +198,6 @@ Reading *FilterTransientSp::generateReadingTransient(Reading *reading) {
     }
 
     DatapointValue *dpFractionSecond = findValueElement(dpT, ConstantsTransient::KeyMessagePivotJsonFractSec);
-    long msPart = 0;
     if (dpFractionSecond == nullptr) {
         Datapoint * dpFr = createIntegerElement(dpT, ConstantsTransient::KeyMessagePivotJsonFractSec, 0);
         dpFractionSecond = &dpFr->getData();
@@ -235,8 +226,8 @@ Reading *FilterTransientSp::generateReadingTransient(Reading *reading) {
 
     createStringElement(dpTmOrg, ConstantsTransient::KeyMessagePivotJsonStVal, ConstantsTransient::ValueSubstituted);
 
-    Datapoint *newDatapointTransient = new Datapoint(dpRoot->getName(), newValueTransient);
-    Reading *newReading = new Reading(reading->getAssetName(), newDatapointTransient);
+    auto newDatapointTransient = new Datapoint(dpRoot->getName(), newValueTransient);
+    auto newReading = new Reading(reading->getAssetName(), newDatapointTransient);
     return newReading;
 }
 
