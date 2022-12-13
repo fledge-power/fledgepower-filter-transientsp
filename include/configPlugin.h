@@ -19,10 +19,9 @@ public:
     ConfigPlugin();
 
     void importExchangedData(const std::string & exchangeConfig);
-    void deleteDataTransient();
     bool isTransient(const std::string& id);
 
-    const std::vector<std::string> getDataTransient() { return m_dataTransient; };
+    std::vector<std::string> getDataTransient() { return m_dataTransient; };
     
 private:
     std::vector<std::string> m_dataTransient;

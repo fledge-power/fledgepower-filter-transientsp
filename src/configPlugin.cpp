@@ -18,13 +18,6 @@ ConfigPlugin::ConfigPlugin() {
 }
 
 /**
- * Deletion of loaded data
-*/
-void ConfigPlugin::deleteDataTransient() {
-    m_dataTransient.clear();
-}
-
-/**
  * Import data in the form of Exchanged_data
  * The data is saved in a map m_exchangeDefinitions
  * 
@@ -32,7 +25,7 @@ void ConfigPlugin::deleteDataTransient() {
 */
 void ConfigPlugin::importExchangedData(const string & exchangeConfig) {
     
-    deleteDataTransient();
+    m_dataTransient.clear();
     Document document;
 
     if (document.Parse(exchangeConfig.c_str()).HasParseError()) {

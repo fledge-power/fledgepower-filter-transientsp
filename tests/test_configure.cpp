@@ -299,11 +299,3 @@ TEST_F(PluginConfigure, ConfigureOKDps)
     ASSERT_EQ(filter->getConfigPlugin().getDataTransient().size(), 1);
     ASSERT_TRUE(filter->getConfigPlugin().isTransient("M_2367_3_15_4"));
 }
-
-TEST_F(PluginConfigure, DeleteTransient) 
-{
-	filter->setJsonConfig(configureOKDps);
-    ASSERT_EQ(filter->getConfigPlugin().getDataTransient().size(), 1);
-    filter->getConfigPlugin().deleteDataTransient();
-    ASSERT_EQ(filter->getConfigPlugin().getDataTransient().size(), 0);
-}
