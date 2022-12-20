@@ -5,34 +5,30 @@
 
 #define FILTER_NAME "transientsp"
 
-struct ConstantsTransient {
+namespace ConstantsTransient {
 
-    static const std::string NamePlugin;
+    static const std::string NamePlugin            = FILTER_NAME;
 
-    static const char *JsonExchangedData;
-    static const char *JsonDatapoints;
-    static const char *JsonPivotType;
-    static const char *JsonPivotId;
-    static const char *JsonTfid;
-    static const char *JsonDeadband;
-    static const char *JsonParams;
-    static const char *JsonPivotSubtypes ;
+    static const char *JsonExchangedData           = "exchanged_data";
+    static const char *JsonDatapoints              = "datapoints";
+    static const char *JsonPivotType               = "pivot_type";
+    static const char *JsonPivotId                 = "pivot_id";
+    static const char *JsonPivotSubtypes           = "pivot_subtypes";
 
-    static const std::string JsonAttrMvtyp;
-    static const std::string JsonCdcSps;
-    static const std::string JsonCdcDps;
+    static const std::string JsonCdcSps     = "SpsTyp";
+    static const std::string JsonCdcDps     = "DpsTyp";
 
-    static const std::string KeyMessagePivotJsonRoot;
-    static const std::string KeyMessagePivotJsonGt;
-    static const std::string KeyMessagePivotJsonId;
-    static const std::string KeyMessagePivotJsonStVal;
-    static const std::string KeyMessagePivotJsonFractSec;
-    static const std::string KeyMessagePivotJsonSecondSinceEpoch;
-    static const std::string KeyMessagePivotJsonT;
-    static const std::string KeyMessagePivotJsonQ;
-    static const std::string ValueSubstituted;
-    static const std::string KeyMessagePivotJsonTmOrg;
-    static const std::string KeyMessagePivotJsonSource;
+    static const std::string KeyMessagePivotJsonRoot       = "PIVOT";
+    static const std::string KeyMessagePivotJsonGt         = "GTIS";
+    static const std::string KeyMessagePivotJsonId         = "Identifier";
+    static const std::string KeyMessagePivotJsonStVal      = "stVal";
+    static const std::string KeyMessagePivotJsonT          = "t";
+    static const std::string KeyMessagePivotJsonSecondSinceEpoch = "SecondSinceEpoch";
+    static const std::string KeyMessagePivotJsonFractSec   = "FractionOfSecond";
+    static const std::string KeyMessagePivotJsonQ          = "q";
+    static const std::string KeyMessagePivotJsonSource     = "Source";
+    static const std::string ValueSubstituted              = "substituted";
+    static const std::string KeyMessagePivotJsonTmOrg      = "TmOrg";
 };
 
 #endif //INCLUDE_CONSTANTS_TRANSIENT_H_
