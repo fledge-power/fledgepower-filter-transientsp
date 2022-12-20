@@ -9,11 +9,11 @@ namespace ConstantsTransient {
 
     static const std::string NamePlugin            = FILTER_NAME;
 
-    static const char *JsonExchangedData           = "exchanged_data";
-    static const char *JsonDatapoints              = "datapoints";
-    static const char *JsonPivotType               = "pivot_type";
-    static const char *JsonPivotId                 = "pivot_id";
-    static const char *JsonPivotSubtypes           = "pivot_subtypes";
+    constexpr const char *JsonExchangedData           = "exchanged_data";
+    constexpr const char *JsonDatapoints              = "datapoints";
+    constexpr const char *JsonPivotType               = "pivot_type";
+    constexpr const char *JsonPivotId                 = "pivot_id";
+    constexpr const char *JsonPivotSubtypes           = "pivot_subtypes";
 
     static const std::string JsonCdcSps     = "SpsTyp";
     static const std::string JsonCdcDps     = "DpsTyp";
