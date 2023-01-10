@@ -14,7 +14,7 @@
 #include <filterTransientSp.h>
 #include <constantsTransient.h>
 #include <datapointUtility.h>
-#include <utility.h>
+#include <utilityPivot.h>
 
 using namespace std;
 using namespace DatapointUtility;
@@ -203,9 +203,9 @@ Reading *FilterTransientSp::generateReadingTransient(Reading *reading) {
         dpFractionSecond = &dpFr->getData();
     }
 
-    long timestamp = Utility::toTimestamp(dpSinceEpo->toInt(), dpFractionSecond->toInt());
+    long timestamp = UtilityPivot::toTimestamp(dpSinceEpo->toInt(), dpFractionSecond->toInt());
     timestamp += 1;
-    std::pair<long, long> convertTimestamp = Utility::fromTimestamp(timestamp);
+    std::pair<long, long> convertTimestamp = UtilityPivot::fromTimestamp(timestamp);
 
     dpSinceEpo->setValue(convertTimestamp.first);
     dpFractionSecond->setValue(convertTimestamp.second);

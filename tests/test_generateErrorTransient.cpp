@@ -34,7 +34,7 @@ static string jsonMessagePivotTM = QUOTE({
 });
 
 static string jsonMessageGiTM = QUOTE({
-	"PIVOTTS": {
+	"PIVOT": {
         "GTIM": {
             "SpsTyp": {
                 "q": {
@@ -56,7 +56,7 @@ static string jsonMessageGiTM = QUOTE({
 });
 
 static string jsonMessageMvTyp = QUOTE({
-	"PIVOTTS": {
+	"PIVOT": {
         "GTIS": {
             "MvTyp": {
                 "q": {
@@ -78,7 +78,7 @@ static string jsonMessageMvTyp = QUOTE({
 });
 
 static string jsonMessageWithoutT = QUOTE({
-	"PIVOTTS": {
+	"PIVOT": {
         "GTIS": {
             "SpsTyp": {
                 "q": {
@@ -96,7 +96,7 @@ static string jsonMessageWithoutT = QUOTE({
 });
 
 static string jsonMessageWithoutSecondEpoch = QUOTE({
-	"PIVOTTS": {
+	"PIVOT": {
         "GTIS": {
             "SpsTyp": {
                 "q": {
@@ -117,7 +117,7 @@ static string jsonMessageWithoutSecondEpoch = QUOTE({
 });
 
 static string jsonMessageWithoutTmOrg = QUOTE({
-	"PIVOTTS": {
+	"PIVOT": {
         "GTIS": {
             "SpsTyp": {
                 "q": {
@@ -136,7 +136,7 @@ static string jsonMessageWithoutTmOrg = QUOTE({
 });
 
 static string jsonMessageWithoutStVal = QUOTE({
-    "PIVOTTS": {
+    "PIVOT": {
         "GTIS": {
             "SpsTyp": {
                 "q": {

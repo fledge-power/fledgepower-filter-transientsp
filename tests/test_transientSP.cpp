@@ -4,7 +4,7 @@
 #include <filterTransientSp.h>
 #include <jsonToDatapoints.h>
 #include <constantsTransient.h>
-#include <utility.h>
+#include <utilityPivot.h>
 
 using namespace std;
 using namespace DatapointUtility;
@@ -58,7 +58,7 @@ static string configure = QUOTE({
 });
 
 static string jsonMessagePivotSpsTyp = QUOTE({
-	"PIVOTTS": {
+	"PIVOT": {
         "GTIS": {
             "SpsTyp": {
                 "q": {
@@ -80,7 +80,7 @@ static string jsonMessagePivotSpsTyp = QUOTE({
 });
 
 static string jsonMessagePivotDpsTyp = QUOTE({
-	"PIVOTTS": {
+	"PIVOT": {
         "GTIS": {
             "DpsTyp": {
                 "q": {
@@ -102,7 +102,7 @@ static string jsonMessagePivotDpsTyp = QUOTE({
 });
 
 static string jsonMessagePivotDpsTypWithoutQ = QUOTE({
-	"PIVOTTS": {
+	"PIVOT": {
         "GTIS": {
             "DpsTyp": {
                 "t": {
@@ -120,7 +120,7 @@ static string jsonMessagePivotDpsTypWithoutQ = QUOTE({
 });
 
 static string jsonMessagePivotSpsTypWithoutFractionOfSeconds = QUOTE({
-	"PIVOTTS": {
+	"PIVOT": {
         "GTIS": {
             "SpsTyp": {
                 "q": {
@@ -251,7 +251,7 @@ protected:
             fract = fractionOfSecond->toInt();
         }
 
-        long time_calcul = Utility::toTimestamp(sinceSecondEpoch->toInt(), fract) ;
+        long time_calcul = UtilityPivot::toTimestamp(sinceSecondEpoch->toInt(), fract) ;
         ASSERT_EQ(ts, time_calcul);
 
         DatapointValue *stVal = findValueElement(dpTyp, ConstantsTransient::KeyMessagePivotJsonStVal);
@@ -300,7 +300,7 @@ protected:
         DatapointValue *fractionOfSecond = findValueElement(dpT, ConstantsTransient::KeyMessagePivotJsonFractSec);
 		ASSERT_NE(fractionOfSecond, nullptr);
 
-        long time_calcul = Utility::toTimestamp(sinceSecondEpoch->toInt(), fractionOfSecond->toInt()) ;
+        long time_calcul = UtilityPivot::toTimestamp(sinceSecondEpoch->toInt(), fractionOfSecond->toInt()) ;
         ASSERT_EQ(ts + 1, time_calcul);
 
         DatapointValue *stVal = findValueElement(dpTyp, ConstantsTransient::KeyMessagePivotJsonStVal);

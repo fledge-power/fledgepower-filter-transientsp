@@ -1,5 +1,5 @@
-#ifndef INCLUDE_UTILITY_H_
-#define INCLUDE_UTILITY_H_
+#ifndef INCLUDE_UTILITY_PIVOT_H_
+#define INCLUDE_UTILITY_PIVOT_H_
 /*
  * Utility
  *
@@ -12,10 +12,11 @@
  */
 #include<string>
 
-namespace Utility {  
+namespace UtilityPivot {  
     // Function for search value
     long                    toTimestamp     (long secondSinceEpoch, long fractionOfSecond);
     std::pair<long, long>   fromTimestamp   (long timestamp);
+    long                    getCurrentTimestampMs();
 };
 
-#endif  // INCLUDE_UTILITY_H_
+#endif  // INCLUDE_UTILITY_PIVOT_H_

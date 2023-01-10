@@ -34,7 +34,7 @@ static string jsonMessagePivotTM = QUOTE({
 });
 
 static string jsonMessageGiTM = QUOTE({
-	"PIVOTTS": {
+	"PIVOT": {
         "GTIM": {
             "SpsTyp": {
                 "q": {
@@ -56,7 +56,7 @@ static string jsonMessageGiTM = QUOTE({
 });
 
 static string jsonMessageMvTyp = QUOTE({
-	"PIVOTTS": {
+	"PIVOT": {
         "GTIS": {
             "MvTyp": {
                 "q": {
@@ -78,7 +78,7 @@ static string jsonMessageMvTyp = QUOTE({
 });
 
 static string jsonMessageWithoutID = QUOTE({
-	"PIVOTTS": {
+	"PIVOT": {
         "GTIS": {
             "SpsTyp": {
                 "q": {
@@ -99,7 +99,7 @@ static string jsonMessageWithoutID = QUOTE({
 });
 
 static string jsonMessageUnknownConfig = QUOTE({
-	"PIVOTTS": {
+	"PIVOT": {
         "GTIS": {
             "SpsTyp": {
                 "q": {
@@ -121,7 +121,7 @@ static string jsonMessageUnknownConfig = QUOTE({
 });
 
 static string jsonMessageWithoutStVal = QUOTE({
-    "PIVOTTS": {
+    "PIVOT": {
         "GTIS": {
             "SpsTyp": {
                 "q": {
@@ -142,7 +142,7 @@ static string jsonMessageWithoutStVal = QUOTE({
 });
 
 static string jsonMessageSpsDiffOf0 = QUOTE({
-    "PIVOTTS": {
+    "PIVOT": {
         "GTIS": {
             "SpsTyp": {
                 "q": {
@@ -164,7 +164,7 @@ static string jsonMessageSpsDiffOf0 = QUOTE({
 });
 
 static string jsonMessageDpsDiffOfOn = QUOTE({
-    "PIVOTTS": {
+    "PIVOT": {
         "GTIS": {
             "DpsTyp": {
                 "q": {
@@ -314,35 +314,35 @@ TEST_F(NoModifyData, MessagePIVOTTM)
 
 TEST_F(NoModifyData, MessageGTIM) 
 {
-	startTests(jsonMessageGiTM, "PIVOTTS", "GTIM", "SpsTyp");
+	startTests(jsonMessageGiTM, "PIVOT", "GTIM", "SpsTyp");
 }
 
 TEST_F(NoModifyData, MessageMvTyp) 
 {
-	startTests(jsonMessageMvTyp, "PIVOTTS", "GTIS", "MvTyp");
+	startTests(jsonMessageMvTyp, "PIVOT", "GTIS", "MvTyp");
 }
 
 TEST_F(NoModifyData, MessageWithoutID) 
 {
-	startTests(jsonMessageWithoutID, "PIVOTTS", "GTIS", "SpsTyp");
+	startTests(jsonMessageWithoutID, "PIVOT", "GTIS", "SpsTyp");
 }
 
 TEST_F(NoModifyData, MessageUnknownConfig) 
 {
-	startTests(jsonMessageUnknownConfig, "PIVOTTS", "GTIS", "SpsTyp");
+	startTests(jsonMessageUnknownConfig, "PIVOT", "GTIS", "SpsTyp");
 }
 
 TEST_F(NoModifyData, MessageWithoutStVal) 
 {
-	startTests(jsonMessageWithoutStVal, "PIVOTTS", "GTIS", "SpsTyp");
+	startTests(jsonMessageWithoutStVal, "PIVOT", "GTIS", "SpsTyp");
 }
 
 TEST_F(NoModifyData, MessageSpsDiffOf0) 
 {
-	startTests(jsonMessageSpsDiffOf0, "PIVOTTS", "GTIS", "SpsTyp");
+	startTests(jsonMessageSpsDiffOf0, "PIVOT", "GTIS", "SpsTyp");
 }
 
 TEST_F(NoModifyData, MessageDpsDiffOfOn) 
 {
-	startTests(jsonMessageDpsDiffOfOn, "PIVOTTS", "GTIS", "DpsTyp");
+	startTests(jsonMessageDpsDiffOfOn, "PIVOT", "GTIS", "DpsTyp");
 }
