@@ -11,7 +11,7 @@
  * Author: Yannick Marchetaux
  * 
  */
-#include <datapointUtility.h>
+#include <datapoint_utility.h>
 #include <configPlugin.h>
 
 #include <config_category.h>
