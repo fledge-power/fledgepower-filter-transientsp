@@ -2,12 +2,10 @@
 #include <gtest/gtest.h>
 
 #include <filterTransientSp.h>
-#include <jsonToDatapoints.h>
 #include <constantsTransient.h>
 
 using namespace std;
 using namespace DatapointUtility;
-using namespace JsonToDatapoints;
 
 static string nameReading = "data_test";
 
@@ -227,7 +225,10 @@ protected:
 		ASSERT_NE(filter, (void *)NULL);
 
         // Create Reading
-        Datapoints *p = parseJson(json);
+        DatapointValue d("");
+        Datapoint *tmp = new Datapoint("", d);
+        Datapoints *p = tmp->parseJson(json);
+        delete tmp;
 
 		Reading *reading = new Reading(nameReading, *p);
         Readings *readings = new Readings;

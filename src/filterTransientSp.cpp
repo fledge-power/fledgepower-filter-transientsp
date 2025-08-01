@@ -13,7 +13,7 @@
 
 #include <filterTransientSp.h>
 #include <constantsTransient.h>
-#include <datapointUtility.h>
+#include <datapoint_utility.h>
 #include <utilityPivot.h>
 
 using namespace std;
